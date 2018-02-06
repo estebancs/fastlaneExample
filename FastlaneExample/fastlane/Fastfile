@@ -47,6 +47,40 @@ platform :ios do
     # frameit
   end
 
+  desc "Builds the app for development testing"
+  lane :development do
+    increment_build_number
+    appName = "FastlaneExample" + get_version_number + "." + get_build_number
+    gym(
+      export_method: "development",
+      output_name: appName
+    ) 
+    hockey(
+      api_token: "8026bfaff3c045a7bf8f6a8bbaf8d3b9",
+      ipa: "./FastlaneExample.ipa",
+      notes: "Changelog"
+    )
+    mailgun(
+      to: "jossiestebancs@gmail.com",
+      success: true,
+      message: "This is the mail's content"
+    )
+    # sh "your_script.sh"
+  end
+
+  desc "Send email using mailgun"
+  lane :test_mail_gun do
+    mailgun(
+      postmaster: "postmaster@sandbox4ad8eb06507b489e9f977d1ee7632283.mailgun.org",
+      to: "esteban.chavarria@gorillalogic.com",
+      success: true,
+      message: "This is the mail's content",
+      app_link: "http://www.myapplink.com",
+      apikey: "key-e9ea2be81d28ea5b9a3e13f2057a63a0",
+      success: false,
+    )
+  end 
+
   # You can define as many lanes as you want
 
   after_all do |lane|
